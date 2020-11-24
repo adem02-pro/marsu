@@ -1,6 +1,5 @@
 export interface Marsupilami {
   _id?: string;
-  isLoggedIn?: boolean;
   name: string;
   username: string;
   birth: Date;

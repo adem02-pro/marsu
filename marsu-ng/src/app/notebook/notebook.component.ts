@@ -5,6 +5,8 @@ import { MarsuService } from '../marsu.service';
 import { Marsupilami } from '../model/Marsupilami';
 import { ImagesTab } from '../images'
 
+declare var $:any
+
 @Component({
   selector: 'app-notebook',
   templateUrl: './notebook.component.html',
@@ -12,91 +14,61 @@ import { ImagesTab } from '../images'
 })
 export class NotebookComponent implements OnInit {
 
-  loggedMarsu: Marsupilami
+  loggedMarsu$: Observable<Marsupilami>
   displayFriends: boolean = true
   friendsList: Marsupilami[] = []
   catalog: Marsupilami[] = []
   randomImage: any
+  notification: boolean = false
+  listMarsus$: Observable<Marsupilami[]>
+  listFriends$: Observable<Marsupilami[]>
+  listNonFriends$: Observable<Marsupilami[]>
 
   constructor(private service: MarsuService, private router: Router) {}
 
   ngOnInit(): void {
+    this.loggedMarsu$ = this.service.getMarsu()
     this.fetchData()
     this.randomImage = ImagesTab[Math.floor(Math.random() * ImagesTab.length)]
   }
 
   fetchData() {
-    this.service.getMarsu().subscribe(
-      data => {
-        this.loggedMarsu = data
-        data.friends.map(friend => {
-          this.service.getMarsuById(friend).subscribe(
-            data => {
-              this.friendsList.push(data);
-            }
-          );
-        })
-        this.service.getMarsus().subscribe(
-          data => {
-            data.map(marsu => {
-              if (!this.service.isAFriend(this.loggedMarsu.friends, marsu._id) && marsu._id !== this.loggedMarsu._id)
-                this.catalog.push(marsu);
-            });
-          }
-        )
-      }
-    )
-  }
-
-  refreshData() {
-    this.catalog = []
-    this.friendsList = []
-    this.fetchData()
+    this.listFriends$ = this.service.getFriendsList()
+    this.listNonFriends$ = this.service.getNotFriendsList()
   }
 
   logout() {
     this.service.logout().subscribe
     (
-      data => {
-        this.router.navigate(['/login'])
-      }
+      () => this.router.navigate(['/login']),
+      err => console.log(err)
     )
   }
 
   add(id) {
     const friend = { friend: id }
     this.service.addFriend(friend).subscribe(
-      data => {
-        this.friendsList.push(data)
-        this.catalog = this.catalog.filter(el => el !== data)
+      () => {
+        this.notification = true
       },
       err => console.log(err),
-    )
-  }
-
-  goToFriends() {
-    this.displayFriends = true
-    this.refreshData()
-  }
-
-  goToCatalog() {
-    this.displayFriends = false
-    this.refreshData()
-  }
-
-  seeProfil() {
-    this.service.getFriendsList().subscribe(
-      data => console.log(data)
+      () => {
+        $('.toast').toast('show')
+        this.fetchData()
+      }
     )
   }
 
   deleteFriend(id: string) {
     this.service.deleteFriend(id).subscribe(
-      data => {
-        this.catalog.push()
-        this.friendsList = this.friendsList.filter(el => el !==data)
+      () => {
+        this.notification = false
       },
       err => console.log(err),
+      () => {
+        $('.toast').toast('show')
+        this.fetchData()
+      }
     )
   }
 

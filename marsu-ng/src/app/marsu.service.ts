@@ -46,17 +46,12 @@ export class MarsuService {
     return this.http.post<Marsupilami>(`${this.baseURL}/add`, friend);
   }
 
-  getFriendsList() {
-    return this.http.get(`${this.baseURL}/friends`)
+  getFriendsList(): Observable<Marsupilami[]>{
+    return this.http.get<Marsupilami[]>(`${this.baseURL}/friends`)
   }
 
-  checkAuthState() {
-    return this.http.get(`${this.baseURL}/auth`);
-  }
-
-  isAFriend(marsu: string[], friend: string): boolean {
-    const found = marsu.find(el => el == friend)
-    return found ? true : false
+  getNotFriendsList(): Observable<Marsupilami[]> {
+    return this.http.get<Marsupilami[]>(`${this.baseURL}/marsus-not-friends`)
   }
 
   deleteFriend(id: string): Observable<Marsupilami> {

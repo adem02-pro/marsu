@@ -14,13 +14,6 @@ router.get('/marsus', (req, res) => {
     })
 })
 
-router.get('/friends', (req, res) => {
-    Friend.find((err, docs) => {
-        if(err) res.status(400).json(err)
-        else res.status(200).json(docs)
-    })
-})
-
 router.get('/marsu', (req, res) => {
     const user = req.user
     if(user) {
@@ -92,22 +85,10 @@ router.get('/logout', (req, res) => {
 
 // add => http://localhost:3000/api/v1/add
 router.post('/add', async (req, res) => {
-    console.log(req.body.friend);
-    const friend = new Friend({
-        marsu: req.user._id,
-        friend: req.body.friend
-    })
     const marsu = await Marsupilami.findById(req.user._id)
-
-    friend.save((err, doc) => {
-        if(err) res.status(500).json(err)
-        else {
-            res.status(201).json(doc)
-        }
-    })
-
     marsu.friends.push(req.body.friend)
-    marsu.save()
+    await marsu.save()
+    res.status(201).send(marsu)
 })
 
 router.delete('/delete/:id', async (req, res) => {
@@ -117,25 +98,39 @@ router.delete('/delete/:id', async (req, res) => {
         return res.status(500).json(`Id invalid !`)
 
     const marsu = await Marsupilami.findById(req.user._id)
-    const condition = {marsu: marsu._id, friend: id}
+    marsu.friends = marsu.friends.filter(el => el != id)
+    await marsu.save()
+    res.status(202).send(marsu)
+})
 
-    await Friend.findOne(condition, (err, doc) => {
-        if(!err) {
-            Friend.findByIdAndRemove(doc._id, (err, doc) => {
-                if(!err) {
-                    Marsupilami.findById(req.user._id, (err, doc) => {
-                        if(!err)
-                        {    
-                            doc.friends = doc.friends.filter(el => el != req.params.id)
-                            console.log(doc.friends);
-                            doc.save()
-                            console.log(`Deleted !`);
-                        }
-                    })
-                }
-            })
-        }
+// listOfFriends => http://localhost:3000/api/v1/user-friends/:id
+router.get('/user-friends/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    if(!ObjectId.isValid(id))
+        return res.status(500).json(`Id invalid !`)
+
+    const marsu = await Marsupilami.findById(userId).populate('friends')
+})
+
+// listOfFriends => http://localhost:3000/api/v1/friends
+router.get('/friends', (req, res) => {
+    Marsupilami.findById(req.user._id)
+    .populate('friends')
+    .exec((err, doc) => {
+        if(!err) res.status(200).send(doc.friends)
     })
 })
+
+router.get('/marsus-not-friends', async (req, res) => {
+    const marsu = await Marsupilami.findById(req.user._id)
+
+    const marsus = await Marsupilami.find()
+
+    Marsupilami.find({_id : { "$nin": marsu.friends }}, (err, docs) => {
+        if(!err) res.status(200).send(docs)
+    })
+})
+
 
 module.exports = router

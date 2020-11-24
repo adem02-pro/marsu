@@ -1,4 +1,4 @@
-<div class="container-fluid mt-5" *ngIf="loggedMarsu as marsu" >
+<div class="container-fluid mt-5" style="position: relative;" *ngIf="(loggedMarsu$ | async) as loggedMarsu" >
   <div class="row">
     <div class="col-md-7 profil">
       <div class="marsu-data-container">
@@ -6,31 +6,31 @@
           <img src="/assets/images/{{randomImage.img}}" alt="" style="width: 150px; height: 200px;">
         </div>
         <div class="marsu-data">
-          <h3>{{marsu.name}}</h3>
-          <p>Age : {{marsu.birth | age}}ans</p>
-          <p>Famille: {{marsu.family}}</p>
-          <p>Race: {{marsu.race}}</p>
-          <p>Nourriture: {{marsu.food}}</p>
+          <h3>{{loggedMarsu.name}}</h3>
+          <p>Age : {{loggedMarsu.birth | age}}ans</p>
+          <p>Famille: {{loggedMarsu.family}}</p>
+          <p>Race: {{loggedMarsu.race}}</p>
+          <p>Nourriture: {{loggedMarsu.food}}</p>
         </div>
       </div>
       <div class="profile-btn-container">
         <button class="btn btn-danger ml-auto" (click)="logout()">Déconnexion</button>
-        <button class="btn btn-light ml-1" (click)="editProfile(marsu._id)">Editer</button>
+        <button class="btn btn-light ml-1" (click)="editProfile(loggedMarsu._id)">Editer</button>
       </div>
     </div>
 
     <div class="col-md-5 friends">
       <div class="w-100 d-flex flex-row justify-content-between">
-        <p class="btn btn-primary btn-xs" (click)="goToFriends()">Amis</p>
-        <p class="btn btn-primary btn-xs" (click)="goToCatalog()">Catalogue</p>
+        <p class="btn btn-primary btn-xs" (click)="displayFriends = true">Amis</p>
+        <p class="btn btn-primary btn-xs" (click)="displayFriends = false">Catalogue</p>
       </div>
       <div class="container" *ngIf="!displayFriends" style="overflow: auto;">
         <h4>Faites-vous des amis</h4>
         <div class="catalog">
-          <ul>
-            <li class="list" *ngFor="let marsu of catalog">
-              <p>{{marsu.name}}</p>
-              <div class="d-flex flex-row justify-content-around">
+          <ul class="lists">
+            <li class="list-element" *ngFor="let marsu of listNonFriends$ | async">
+              <div class="list-content">
+                <p>{{marsu.name}}</p>
                 <span>
                   <i class="material-icons" (click)="add(marsu._id)" style="cursor: pointer;">add</i>
                 </span>
@@ -42,10 +42,10 @@
       <div class="container" *ngIf="displayFriends">
         <h4>Liste d'amis</h4>
         <div class="friend-list" *ngIf="friendsList">
-          <ul>
-            <li class="list" *ngFor="let friend of friendsList">
-              <p><a [routerLink]="['/friend', friend._id]" routerLinkActive>{{friend.name}}</a></p>
-              <div class="d-flex flex-row justify-content-around">
+          <ul class="lists">
+            <li class="list-element" *ngFor="let friend of listFriends$ | async">
+              <div class="list-content" >
+                <p><a [routerLink]="['/friend', friend._id]" routerLinkActive>{{friend.name}}</a></p>
                 <span>
                   <i class="material-icons" (click)="deleteFriend(friend._id)" style="cursor: pointer;">delete</i>
                 </span>
@@ -54,6 +54,21 @@
           </ul>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: -40px; left: 5px;" class="toast" data-autohide="true" data-delay="3000">
+    <div class="toast-header">
+      <strong  class="mr-auto">Notification</strong>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div *ngIf="notification" class="toast-body">
+      Friend successfully added !
+    </div>
+    <div *ngIf="!notification" class="toast-body">
+      Friend successfully removed !
     </div>
   </div>
 </div>
