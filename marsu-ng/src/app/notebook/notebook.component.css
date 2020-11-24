@@ -1,0 +1,73 @@
+.profil {
+    padding: 10px;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    max-width: 550px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.marsu-data-container {
+  display: flex;
+  align-items: center;
+}
+
+.marsu-img {
+  height: 100%;
+}
+
+.marsu-data {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-fluid {
+  padding: 0 60px;
+}
+
+.friend-list, .catalog {
+  width: 100%;
+  overflow: auto;
+}
+
+.list {
+  padding: 3px;
+  margin: 0;
+  border-top: 1px solid gray;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list:hover {
+  background-color: rgb(167, 163, 163);
+  transition: 250ms;
+}
+
+.profile-btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 768px) {
+  .recherche {
+    height: auto;
+    margin-top: 10px;
+  }
+
+  .friends {
+    margin-top: 20px;
+    width: 70%;
+    margin: auto;
+    min-width: 350px;
+  }
+
+  .friend-list, .catalog {
+    max-height: 300px;
+    width: 100%;
+    overflow: auto;
+  }
+}
