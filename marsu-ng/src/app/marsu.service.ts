@@ -8,10 +8,10 @@ import { Marsupilami } from './model/Marsupilami'
 })
 export class MarsuService {
   baseURL: string = 'http://localhost:3000/api/v1'
-  isAuthenticated: boolean = false;
   connectedMarsu: Marsupilami
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getMarsus(): Observable<Marsupilami[]> {
     return this.http.get<Marsupilami[]>(`${this.baseURL}/marsus`)
@@ -38,7 +38,7 @@ export class MarsuService {
   }
 
   logout() {
-    this.isAuthenticated = false
+    sessionStorage.clear()
     return this.http.get<void>(`${this.baseURL}/logout`);
   }
 

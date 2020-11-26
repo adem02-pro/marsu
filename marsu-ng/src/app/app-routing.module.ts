@@ -6,10 +6,11 @@ import { ErrorComponent } from './error/error.component';
 import { FriendComponent } from './friend/friend.component'
 import { EditComponent } from './edit/edit.component';
 import { LoggedInGuard } from './logged-in.guard'
+import { CloseSignCompGuard } from './close-sign-comp.guard'
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: '/login'},
-  {path: 'login', component: SignInComponent},
+  {path: 'login', component: SignInComponent, canActivate: [CloseSignCompGuard]},
   {path: '',
     canActivate: [LoggedInGuard],
     children: [

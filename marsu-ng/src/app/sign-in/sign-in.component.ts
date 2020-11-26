@@ -32,15 +32,7 @@ export class SignInComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.service.getMarsu().subscribe(
-      data => {
-        if (data) {
-          this.service.isAuthenticated = true
-          this.router.navigate(['note'])
-        }
-      }
-    )
-  }
+}
 
   resetForm(form: FormGroup) {
     form.reset()
@@ -50,7 +42,6 @@ export class SignInComponent implements OnInit {
     this.service.registerMarsu(this.newMarsu.value).subscribe(
       (data) => {
         this.resetForm(this.newMarsu)
-        this.service.isAuthenticated = true
       },
       err => console.log(err),
       () => console.log(`Registered !`)
@@ -58,13 +49,10 @@ export class SignInComponent implements OnInit {
   }
 
   login() {
+    localStorage.setItem('authState', 'connected')
     this.service.login(this.registeredMarsu.value).subscribe(
-      (data) => {
-        if (data) {
-          console.log('logged in !', data);
-          this.service.isAuthenticated = true
-          this.router.navigate(['/note'])
-        }
+      () => {
+        this.router.navigate(['/note'])
       },
       err => console.log(err)
     );

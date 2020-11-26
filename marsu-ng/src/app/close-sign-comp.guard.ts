@@ -7,12 +7,13 @@ import { MarsuService } from './marsu.service';
   providedIn: 'root'
 })
 export class CloseSignCompGuard implements CanActivate {
+  authState = localStorage.getItem('authState')
   constructor(private router: Router, private service: MarsuService) {}
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      return this.service.isAuthenticated == false || this.router.parseUrl('/note');
+      return this.authState == undefined || this.router.parseUrl('/note')
   }
 
 }

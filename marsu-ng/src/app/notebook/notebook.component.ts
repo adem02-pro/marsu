@@ -38,10 +38,11 @@ export class NotebookComponent implements OnInit {
   }
 
   logout() {
+    localStorage.removeItem('authState')
     this.service.logout().subscribe
     (
       () => this.router.navigate(['/login']),
-      err => console.log(err)
+      err => console.log(err),
     )
   }
 
