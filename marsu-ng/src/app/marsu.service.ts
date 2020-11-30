@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'
 import { Marsupilami } from './model/Marsupilami'
+import { nRCatalog, nrFriends } from './mockData'
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,12 @@ import { Marsupilami } from './model/Marsupilami'
 export class MarsuService {
   baseURL: string = 'http://localhost:3000/api/v1'
   connectedMarsu: Marsupilami
+  fakeCatalog: Marsupilami[]
+  fakeFriends: Marsupilami[]
 
   constructor(private http: HttpClient) {
+    this.fakeCatalog = nRCatalog
+    this.fakeFriends = nrFriends
   }
 
   getMarsus(): Observable<Marsupilami[]> {
@@ -56,5 +61,19 @@ export class MarsuService {
 
   deleteFriend(id: string): Observable<Marsupilami> {
     return this.http.delete<Marsupilami>(`${this.baseURL}/delete/${id}`)
+  }
+
+
+  // Fake data
+  addFafeFriend(id: string) {
+    let marsu = this.fakeCatalog.find(el => el._id == id)
+    this.fakeCatalog = this.fakeCatalog.filter(nrMarsu => id != nrMarsu._id)
+    this.fakeFriends.push(marsu)
+  }
+
+  deleteFakeFriend(id: string) {
+    let marsu = this.fakeFriends.find(el => el._id == id)
+    this.fakeFriends = this.fakeFriends.filter(nrMarsu => id != nrMarsu._id)
+    this.fakeCatalog.push(marsu)
   }
 }

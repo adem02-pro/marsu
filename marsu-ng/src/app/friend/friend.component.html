@@ -1,14 +1,14 @@
 <div class="container">
-  <div class="marsu-data-container" *ngIf="(friend$ | async) as marsu">
+  <div class="marsu-data-container" *ngIf="friend">
     <div class="marsu-img">
       <img src="/assets/images/marsu1.jpg" alt="" style="width: 150px; height: 200px;">
     </div>
     <div class="marsu-data">
-      <h3>{{marsu.name}}</h3>
-      <p>Age : {{marsu.birth | age}}ans</p>
-      <p>Famille: {{marsu.family}}</p>
-      <p>Race: {{marsu.race}}</p>
-      <p>Nourriture: {{marsu.food}}</p>
+      <h3>{{friend.name}}</h3>
+      <p>Age : {{friend.birth | age}}ans</p>
+      <p>Famille: {{friend.family}}</p>
+      <p>Race: {{friend.race}}</p>
+      <p>Nourriture: {{friend.food}}</p>
     </div>
   </div>
   <div class="profile-btn-container">

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { MarsuService } from '../marsu.service';
 import { Marsupilami } from '../model/Marsupilami';
+import { nrFriends } from '../mockData'
 
 @Component({
   selector: 'app-friend',
@@ -11,13 +12,16 @@ import { Marsupilami } from '../model/Marsupilami';
   styleUrls: ['./friend.component.css']
 })
 export class FriendComponent implements OnInit {
-  friend$: Observable<Marsupilami>
+  friend: Marsupilami
 
   constructor(private service: MarsuService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')
-    this.friend$ = this.service.getMarsuById(id)
+    this.friend = this.service.fakeFriends.find(marsu => id == marsu._id)
+    if(!this.friend) this.service.getMarsuById(id).subscribe(
+      data => this.friend = data
+    )
   }
 
   goToNote() {

@@ -23,18 +23,27 @@ export class NotebookComponent implements OnInit {
   listMarsus$: Observable<Marsupilami[]>
   listFriends$: Observable<Marsupilami[]>
   listNonFriends$: Observable<Marsupilami[]>
+  fakeFriends: Marsupilami[]
+  fakeCatalog: Marsupilami[]
+
 
   constructor(private service: MarsuService, private router: Router) {}
 
   ngOnInit(): void {
     this.loggedMarsu$ = this.service.getMarsu()
     this.fetchData()
+    this.fetchFakeData()
     this.randomImage = ImagesTab[Math.floor(Math.random() * ImagesTab.length)]
   }
 
   fetchData() {
     this.listFriends$ = this.service.getFriendsList()
     this.listNonFriends$ = this.service.getNotFriendsList()
+  }
+
+  fetchFakeData() {
+    this.fakeFriends = this.service.fakeFriends
+    this.fakeCatalog = this.service.fakeCatalog
   }
 
   logout() {
@@ -77,4 +86,17 @@ export class NotebookComponent implements OnInit {
     this.router.navigate(['edit', id])
   }
 
+  addFafeFriend(id: string) {
+    this.notification = true
+    this.service.addFafeFriend(id)
+    this.fetchFakeData()
+    $('.toast').toast('show')
+  }
+
+  deleteFakeFriend(id: string) {
+    this.notification = false
+    this.service.deleteFakeFriend(id)
+    this.fetchFakeData()
+    $('.toast').toast('show')
+  }
 }

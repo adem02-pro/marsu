@@ -25,7 +25,8 @@
         <p class="btn btn-primary btn-xs" (click)="displayFriends = false">Catalogue</p>
       </div>
       <div class="container" *ngIf="!displayFriends" style="overflow: auto;">
-        <h4>Faites-vous des amis</h4>
+        <!-- Liste de marsu inscrits -->
+        <h4>Faites-vous des amis(Inscris)</h4>
         <div class="catalog">
           <ul class="lists">
             <li class="list-element" *ngFor="let marsu of listNonFriends$ | async">
@@ -38,9 +39,26 @@
             </li>
           </ul>
         </div>
+        <!-- Liste de marsu non inscrits -->
+        <h4 class="mt-3">Faites-vous des amis(Non inscrits)</h4>
+        <div class="catalog">
+          <ul class="lists">
+            <li class="list-element" *ngFor="let nrMarsu of fakeCatalog">
+              <div class="list-content">
+                <p>{{nrMarsu.name}}</p>
+                <span>
+                  <i class="material-icons" (click)="addFafeFriend(nrMarsu._id)" style="cursor: pointer;">add</i>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
+
+
       <div class="container" *ngIf="displayFriends">
-        <h4>Liste d'amis</h4>
+        <!-- Liste d'amis inscrits -->
+        <h4>Liste d'amis (Inscrits)</h4>
         <div class="friend-list" *ngIf="friendsList">
           <ul class="lists">
             <li class="list-element" *ngFor="let friend of listFriends$ | async">
@@ -48,6 +66,20 @@
                 <p><a [routerLink]="['/friend', friend._id]" routerLinkActive>{{friend.name}}</a></p>
                 <span>
                   <i class="material-icons" (click)="deleteFriend(friend._id)" style="cursor: pointer;">delete</i>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- Liste d'amis' non inscrits -->
+        <h4>Liste d'amis (Non inscrits)</h4>
+        <div class="friend-list" *ngIf="friendsList">
+          <ul class="lists">
+            <li class="list-element" *ngFor="let friend of fakeFriends">
+              <div class="list-content" >
+                <p><a [routerLink]="['/friend', friend._id]" routerLinkActive>{{friend.name}}</a></p>
+                <span>
+                  <i class="material-icons" (click)="deleteFakeFriend(friend._id)" style="cursor: pointer;">delete</i>
                 </span>
               </div>
             </li>
